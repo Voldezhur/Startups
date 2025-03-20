@@ -45,12 +45,12 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Главная'),
-      ),
+          // title: const Text('Главная'),
+          ),
       body: ListView.builder(
         itemCount: textFiles.length,
         itemBuilder: (context, index) {
-          return fileCard(textFiles[index]);
+          return fileCard(textFiles[index], context);
         },
       ),
     );
@@ -58,24 +58,75 @@ class _MainPageState extends State<MainPage> {
 
   // Book card
   // Gets a TextFile object
-  Widget fileCard(TextFile file) {
+  Widget fileCard(TextFile file, context) {
     return Container(
-      child: FutureBuilder<Map>(
-        future: file.fileInfo,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return Column(
-              children: [
-                Text('Название: ${snapshot.data!['title']}'),
-                Text('Автор: ${snapshot.data!['authorFirstName']} ${snapshot.data!['authorLastName']}'),
-              ],
-            );
-          } else if (snapshot.hasError) {
-            return Text('Ошибка: ${snapshot.error}');
-          } else {
-            return const CircularProgressIndicator();
-          }
-        },
+      decoration: const BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: Color(0x77000000)))),
+      height: MediaQuery.sizeOf(context).height * 0.16,
+      margin: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
+      padding: const EdgeInsets.fromLTRB(0.0, 16.0, 0.0, 16.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Container(
+                height: MediaQuery.sizeOf(context).height * 0.16,
+                width: MediaQuery.sizeOf(context).height * 0.09,
+                color: Colors.grey,
+              ),
+              SizedBox(
+                width: MediaQuery.sizeOf(context).height * 0.025,
+              ),
+              FutureBuilder<Map>(
+                future: file.fileInfo,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Padding(
+                      padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 8.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '${snapshot.data!['title']}',
+                                style: const TextStyle(fontSize: 17),
+                              ),
+                              Text(
+                                '${snapshot.data!['authorFirstName']} ${snapshot.data!['authorLastName']}',
+                                style: const TextStyle(fontSize: 11, color: Color.fromARGB(230, 0, 0, 0)),
+                              ),
+                            ],
+                          ),
+                          const Text(
+                            'Не начато',
+                            style: TextStyle(fontSize: 7, color: Color.fromARGB(191, 0, 0, 0)),
+                          ),
+                        ],
+                      ),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Text('Ошибка: ${snapshot.error}');
+                  } else {
+                    return const CircularProgressIndicator();
+                  }
+                },
+              ),
+            ],
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(Icons.more_horiz),
+                iconSize: 35,
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

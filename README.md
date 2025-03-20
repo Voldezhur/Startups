@@ -15,3 +15,7 @@
 |        4        | [Ссылка](https://github.com/Voldezhur/Startups/tree/week4)   |
 |        5        | [Ссылка](https://github.com/Voldezhur/Startups/tree/week5)   |
 |        6        | [Ссылка](https://github.com/Voldezhur/Startups/tree/week6)   |
+
+# Ссылка на ветку разработки MVP:
+
+[Ссылка](https://github.com/Voldezhur/Startups/tree/ReadAloud)

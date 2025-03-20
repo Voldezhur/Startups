@@ -3,26 +3,33 @@ import 'dart:io';
 import 'package:path/path.dart';
 import 'package:xml/xml.dart';
 
-Future<String> parseFile(String path) async {
+Future<Map> parseFile(String path) async {
   // Processing different file types
   var file = File(path);
 
   switch (extension(path)) {
     case '.fb2':
       var document = XmlDocument.parse(file.readAsStringSync());
-      var titles = document.findAllElements('book-title');
+      var title = document.findAllElements('book-title').first.innerText;
+      var author = document.findAllElements('author').first;
+      var authorFirstName = author.findAllElements('first-name').first.innerText;
+      var authorLastName = author.findAllElements('last-name').first.innerText;
 
-      return titles.first.innerText;
+      return {
+        'title': title,
+        'authorFirstName': authorFirstName,
+        'authorLastName': authorLastName,
+      };
   }
 
-  return '';
+  return {};
 }
 
 class TextFile {
   final String filePath;
-  late Future<String> title;
+  late Future<Map> fileInfo;
 
   TextFile(this.filePath) {
-    title = parseFile(filePath);
+    fileInfo = parseFile(filePath);
   }
 }

@@ -60,21 +60,22 @@ class _MainPageState extends State<MainPage> {
   // Gets a TextFile object
   Widget fileCard(TextFile file) {
     return Container(
-      child: Row(
-        children: [
-          FutureBuilder<String>(
-            future: file.title,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Text('Название: ${snapshot.data}');
-              } else if (snapshot.hasError) {
-                return Text('Ошибка: ${snapshot.error}');
-              } else {
-                return const CircularProgressIndicator();
-              }
-            },
-          ),
-        ],
+      child: FutureBuilder<Map>(
+        future: file.fileInfo,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return Column(
+              children: [
+                Text('Название: ${snapshot.data!['title']}'),
+                Text('Автор: ${snapshot.data!['authorFirstName']} ${snapshot.data!['authorLastName']}'),
+              ],
+            );
+          } else if (snapshot.hasError) {
+            return Text('Ошибка: ${snapshot.error}');
+          } else {
+            return const CircularProgressIndicator();
+          }
+        },
       ),
     );
   }

@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
@@ -78,12 +77,11 @@ class _MainPageState extends State<MainPage> {
                       padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 8.0),
                       child: Row(
                         children: [
-                          // Container(
-                          //   height: MediaQuery.sizeOf(context).height * 0.16,
-                          //   width: MediaQuery.sizeOf(context).height * 0.09,
-                          //   color: Colors.grey,
-                          // ),
-                          Image.memory(Uint8List.fromList(snapshot.data!['imageBin'])),
+                          Container(
+                            height: MediaQuery.sizeOf(context).height * 0.16,
+                            width: MediaQuery.sizeOf(context).height * 0.09,
+                            color: Colors.grey,
+                          ),
                           SizedBox(
                             width: MediaQuery.sizeOf(context).height * 0.025,
                           ),

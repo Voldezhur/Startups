@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
@@ -69,40 +70,45 @@ class _MainPageState extends State<MainPage> {
         children: [
           Row(
             children: [
-              Container(
-                height: MediaQuery.sizeOf(context).height * 0.16,
-                width: MediaQuery.sizeOf(context).height * 0.09,
-                color: Colors.grey,
-              ),
-              SizedBox(
-                width: MediaQuery.sizeOf(context).height * 0.025,
-              ),
               FutureBuilder<Map>(
                 future: file.fileInfo,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return Padding(
                       padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 8.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      child: Row(
                         children: [
+                          // Container(
+                          //   height: MediaQuery.sizeOf(context).height * 0.16,
+                          //   width: MediaQuery.sizeOf(context).height * 0.09,
+                          //   color: Colors.grey,
+                          // ),
+                          Image.memory(Uint8List.fromList(snapshot.data!['imageBin'])),
+                          SizedBox(
+                            width: MediaQuery.sizeOf(context).height * 0.025,
+                          ),
                           Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                '${snapshot.data!['title']}',
-                                style: const TextStyle(fontSize: 17),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${snapshot.data!['title']}',
+                                    style: const TextStyle(fontSize: 17),
+                                  ),
+                                  Text(
+                                    '${snapshot.data!['authorFirstName']} ${snapshot.data!['authorLastName']}',
+                                    style: const TextStyle(fontSize: 11, color: Color.fromARGB(230, 0, 0, 0)),
+                                  ),
+                                ],
                               ),
-                              Text(
-                                '${snapshot.data!['authorFirstName']} ${snapshot.data!['authorLastName']}',
-                                style: const TextStyle(fontSize: 11, color: Color.fromARGB(230, 0, 0, 0)),
+                              const Text(
+                                'Не начато',
+                                style: TextStyle(fontSize: 7, color: Color.fromARGB(191, 0, 0, 0)),
                               ),
                             ],
-                          ),
-                          const Text(
-                            'Не начато',
-                            style: TextStyle(fontSize: 7, color: Color.fromARGB(191, 0, 0, 0)),
                           ),
                         ],
                       ),

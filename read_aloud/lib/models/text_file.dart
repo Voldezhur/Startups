@@ -15,10 +15,13 @@ Future<Map> parseFile(String path) async {
       var authorFirstName = author.findAllElements('first-name').first.innerText;
       var authorLastName = author.findAllElements('last-name').first.innerText;
 
+      var coverImage = document.findAllElements('binary').where((image) => image.getAttribute('id') == 'cover.jpg').toList().first.innerText;
+
       return {
         'title': title,
         'authorFirstName': authorFirstName,
         'authorLastName': authorLastName,
+        'imageBin': coverImage,
       };
   }
 

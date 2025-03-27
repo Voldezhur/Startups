@@ -14,6 +14,7 @@ class _FileInfoPageState extends State<FileInfoPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: FutureBuilder(
         future: widget.file.fileInfo,
         builder: (context, snapshot) {
@@ -22,7 +23,14 @@ class _FileInfoPageState extends State<FileInfoPage> {
               child: Column(
                 children: [
                   SizedBox(height: MediaQuery.sizeOf(context).height * 0.2),
-                  Text(snapshot.data!['annotation'] ?? 'Нет описания🤷‍♀️'),
+                  const Padding(
+                    padding: EdgeInsets.only(bottom: 16.0),
+                    child: Text('Описание', style: TextStyle(fontSize: 21)),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
+                    child: Text(snapshot.data!['annotation'] ?? 'Нет описания🤷‍♀️'),
+                  ),
                 ],
               ),
             );

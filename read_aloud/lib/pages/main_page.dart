@@ -5,6 +5,8 @@ import 'package:path/path.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:read_aloud/consts.dart';
 import 'package:read_aloud/models/text_file.dart';
+import 'package:read_aloud/pages/file_info_page.dart';
+import 'package:read_aloud/pages/file_page.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -73,42 +75,52 @@ class _MainPageState extends State<MainPage> {
                 future: file.fileInfo,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    return Padding(
-                      padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 8.0),
-                      child: Row(
-                        children: [
-                          Container(
-                            height: MediaQuery.sizeOf(context).height * 0.16,
-                            width: MediaQuery.sizeOf(context).height * 0.09,
-                            color: Colors.grey,
-                          ),
-                          SizedBox(
-                            width: MediaQuery.sizeOf(context).height * 0.025,
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    '${snapshot.data!['title']}',
-                                    style: const TextStyle(fontSize: 17),
+                    return GestureDetector(
+                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => FilePage(file: file))),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 8.0),
+                        child: Row(
+                          children: [
+                            Container(
+                              height: MediaQuery.sizeOf(context).height * 0.16,
+                              width: MediaQuery.sizeOf(context).height * 0.09,
+                              color: Colors.grey,
+                            ),
+                            SizedBox(
+                              width: MediaQuery.sizeOf(context).height * 0.025,
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: SizedBox(
+                                    width: MediaQuery.sizeOf(context).width * 0.55,
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          '${snapshot.data!['title']}',
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 2,
+                                          style: const TextStyle(fontSize: 17),
+                                        ),
+                                        Text(
+                                          '${snapshot.data!['authorFirstName']} ${snapshot.data!['authorLastName']}',
+                                          style: const TextStyle(fontSize: 11, color: Color.fromARGB(230, 0, 0, 0)),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  Text(
-                                    '${snapshot.data!['authorFirstName']} ${snapshot.data!['authorLastName']}',
-                                    style: const TextStyle(fontSize: 11, color: Color.fromARGB(230, 0, 0, 0)),
-                                  ),
-                                ],
-                              ),
-                              const Text(
-                                'Не начато',
-                                style: TextStyle(fontSize: 7, color: Color.fromARGB(191, 0, 0, 0)),
-                              ),
-                            ],
-                          ),
-                        ],
+                                ),
+                                const Text(
+                                  'Не начато',
+                                  style: TextStyle(fontSize: 7, color: Color.fromARGB(191, 0, 0, 0)),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     );
                   } else if (snapshot.hasError) {
@@ -124,7 +136,7 @@ class _MainPageState extends State<MainPage> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               IconButton(
-                onPressed: () {},
+                onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => FileInfoPage(file: file))),
                 icon: const Icon(Icons.more_horiz),
                 iconSize: 35,
               ),

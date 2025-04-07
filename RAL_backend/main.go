@@ -3,7 +3,9 @@ package main
 import (
 	"io"
 	"net/http"
+	"os"
 	"strings"
+	"time"
 )
 
 func uppercaseHandler(w http.ResponseWriter, r *http.Request) {
@@ -39,7 +41,27 @@ func uppercaseHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(output))
 }
 
+func mp3test(w http.ResponseWriter, r *http.Request) {
+	filePath := "C:/Egorka/Startups/RAL_backend/smeshariki-ost.mp3"
+
+	file, err := os.Open(filePath)
+	if err != nil {
+		http.Error(w, "File not found", http.StatusNotFound)
+		return
+	}
+	defer file.Close()
+
+	w.Header().Set("Content-Type", "audio/mpeg")
+	w.Header().Set("Content-Disposition", "attachment; filename=file.mp3")
+	w.WriteHeader(http.StatusOK)
+
+	http.ServeContent(w, r, filePath, time.Now(), file)
+
+}
+
 func main() {
 	http.HandleFunc("/uppercase", uppercaseHandler)
+	http.HandleFunc("/mp3_test", mp3test)
+
 	http.ListenAndServe(":8080", nil)
 }

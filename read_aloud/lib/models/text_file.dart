@@ -15,10 +15,18 @@ Future<Map> parseFile(String path) async {
       var authorFirstName = author.findAllElements('first-name').first.innerText;
       var authorLastName = author.findAllElements('last-name').first.innerText;
 
+      // Проверка, есть ли аннотация у книги
+      var annotations = document.findAllElements('annotation');
+      var annotation = annotations.isNotEmpty ? annotations.first.innerText : null;
+
+      var body = document.findAllElements('body').first.innerText;
+
       return {
         'title': title,
         'authorFirstName': authorFirstName,
         'authorLastName': authorLastName,
+        'body': body,
+        'annotation': annotation,
       };
   }
 

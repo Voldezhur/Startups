@@ -26,12 +26,11 @@ class _FilePageState extends State<FilePage> {
                 child: Html(
                   data: snapshot.data!['body'],
                   style: {
-                    "p.fancy": Style(
-                      textAlign: TextAlign.center,
-                      backgroundColor: Colors.grey,
-                      margin: Margins(left: Margin(50, Unit.px), right: Margin.auto()),
-                      width: Width(300, Unit.px),
-                      fontWeight: FontWeight.bold,
+                    "body": Style(
+                      fontSize: FontSize(15),
+                    ),
+                    "p": Style(
+                      backgroundColor: Colors.black,
                     ),
                   },
                 ),

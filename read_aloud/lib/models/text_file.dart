@@ -19,7 +19,7 @@ Future<Map> parseFile(String path) async {
       var annotations = document.findAllElements('annotation');
       var annotation = annotations.isNotEmpty ? annotations.first.innerText : null;
 
-      var body = document.findAllElements('body').first.innerText;
+      var body = document.findAllElements('body').first.toString();
 
       return {
         'title': title,

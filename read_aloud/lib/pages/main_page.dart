@@ -76,7 +76,7 @@ class _MainPageState extends State<MainPage> {
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return GestureDetector(
-                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => FilePage(file: file))),
+                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => FilePage(fileInfo: snapshot.data!))),
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 8.0),
                         child: Row(

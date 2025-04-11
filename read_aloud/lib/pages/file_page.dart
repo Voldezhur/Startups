@@ -1,48 +1,69 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
-import 'package:read_aloud/models/text_file.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class FilePage extends StatefulWidget {
-  const FilePage({super.key, required this.file});
+  const FilePage({super.key, required this.fileInfo});
 
-  final TextFile file;
+  final Map fileInfo;
 
   @override
   State<FilePage> createState() => _FilePageState();
 }
 
 class _FilePageState extends State<FilePage> {
+  // late WebViewController wbController;
+
+  // @override
+  // initState() {
+  //   String htmlBody = widget.fileInfo["body"];
+
+  //   wbController = WebViewController()
+  //     ..setJavaScriptMode(JavaScriptMode.unrestricted)
+  //     ..loadHtmlString("""
+  //       <!DOCTYPE html>
+  //         <html>
+  //           <head><meta name="viewport" content="width=device-width, initial-scale=0.7"></head>
+  //             $htmlBody
+  //         </html>
+  //       """);
+
+  //   super.initState();
+  // }
+
   @override
   Widget build(BuildContext context) {
+    var htmlBody = widget.fileInfo["body"].toString().replaceAll('title', 'titles');
+
+    WebViewController wbController = WebViewController()
+      ..loadHtmlString("""
+        <!DOCTYPE html>
+          <html>
+            <head><meta name="viewport" content="width=device-width, initial-scale=0.7">
+              <style>
+                body {
+                  font-size: 21px;
+                }
+
+                epigraph {
+                  font-style: italic;
+                  max-width: 40%;
+                  text-align: end;
+                }
+
+                titles {
+                  font-size: 24px;
+                  text-align: center;
+                }
+              </style>
+            </head>
+              $htmlBody
+          </html>
+        """)
+      ..setJavaScriptMode(JavaScriptMode.unrestricted);
+
     return Scaffold(
       appBar: AppBar(),
-      body: FutureBuilder<Map>(
-        future: widget.file.fileInfo,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Html(
-                  data: snapshot.data!['body'],
-                  style: {
-                    "body": Style(
-                      fontSize: FontSize(15),
-                    ),
-                    "p": Style(
-                      backgroundColor: Colors.black,
-                    ),
-                  },
-                ),
-              ),
-            );
-          } else if (snapshot.hasError) {
-            return Text('Ошибка: ${snapshot.error}');
-          } else {
-            return const CircularProgressIndicator();
-          }
-        },
-      ),
+      body: WebViewWidget(controller: wbController),
     );
   }
 }

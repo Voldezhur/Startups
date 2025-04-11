@@ -40,8 +40,8 @@ dependencies:
   fb2_parse: ^1.0.1
   path: ^1.9.0
   xml: ^6.5.0
+  webview_flutter: ^4.10.0
   flutter_html: ^3.0.0-beta.2
-  epub_view: ^3.2.0
 
 dev_dependencies:
   flutter_test:

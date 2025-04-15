@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	//"fmt"
+	"encoding/json"
 	"io"
 	"net/http"
 	"os"
@@ -64,27 +65,24 @@ func mp3test(w http.ResponseWriter, r *http.Request) {
 
 }
 
+type textToSpeech struct {
+	Text string `json:"text"`
+}
+
 func version_alpha(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Метод не разрешен", http.StatusMethodNotAllowed)
 		return
 	}
 
-	r.ParseMultipartForm(10 << 20) // 10 MB limit
-
-	file, _, err := r.FormFile("file")
+	// Декодируйте JSON из тела запроса
+	var data textToSpeech
+	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
-		http.Error(w, "Не удалось получить файл", http.StatusBadRequest)
+		http.Error(w, "Ошибка декодирования JSON", http.StatusBadRequest)
 		return
 	}
-	defer file.Close()
-
-	content, err := io.ReadAll(file)
-	if err != nil {
-		http.Error(w, "Ошибка чтения файла", http.StatusInternalServerError)
-		return
-	}
-
+	content := data.Text
 	// Выполняем C#-приложение
 	cmd := exec.Command("C:/Egorka/Startups/RAL_backend/ozvuchka/readaloud.exe", string(content))
 	var out bytes.Buffer

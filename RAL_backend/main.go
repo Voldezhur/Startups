@@ -84,7 +84,7 @@ func version_alpha(w http.ResponseWriter, r *http.Request) {
 	}
 	content := data.Text
 	// Выполняем C#-приложение
-	cmd := exec.Command("C:/Egorka/Startups/RAL_backend/ozvuchka/readaloud.exe", string(content))
+	cmd := exec.Command("ozvuchka/readaloud.exe", string(content))
 	var out bytes.Buffer
 	cmd.Stdout = &out
 	err = cmd.Run()

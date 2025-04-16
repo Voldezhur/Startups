@@ -1,0 +1,1 @@
+C:\Users\denis\source\repos\readaloud\obj\Debug\net5.0\readaloud.csproj.AssemblyReference.cache

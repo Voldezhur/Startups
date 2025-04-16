@@ -11,25 +11,6 @@ class FilePage extends StatefulWidget {
 }
 
 class _FilePageState extends State<FilePage> {
-  // late WebViewController wbController;
-
-  // @override
-  // initState() {
-  //   String htmlBody = widget.fileInfo["body"];
-
-  //   wbController = WebViewController()
-  //     ..setJavaScriptMode(JavaScriptMode.unrestricted)
-  //     ..loadHtmlString("""
-  //       <!DOCTYPE html>
-  //         <html>
-  //           <head><meta name="viewport" content="width=device-width, initial-scale=0.7"></head>
-  //             $htmlBody
-  //         </html>
-  //       """);
-
-  //   super.initState();
-  // }
-
   @override
   Widget build(BuildContext context) {
     var htmlBody = widget.fileInfo["body"].toString().replaceAll('title', 'titles');

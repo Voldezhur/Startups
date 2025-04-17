@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "/jhRkV863p8=",
+  "dgSpecHash": "UX2HBc2vK+E=",
   "success": true,
-  "projectFilePath": "C:\\Users\\denis\\source\\repos\\readaloud\\readaloud.csproj",
+  "projectFilePath": "C:\\Users\\denis\\Desktop\\ds2\\Startups\\readaloud\\readaloud.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\denis\\.nuget\\packages\\microsoft.netcore.platforms\\5.0.1\\microsoft.netcore.platforms.5.0.1.nupkg.sha512",
     "C:\\Users\\denis\\.nuget\\packages\\microsoft.win32.registry\\5.0.0\\microsoft.win32.registry.5.0.0.nupkg.sha512",

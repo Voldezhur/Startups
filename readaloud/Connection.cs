@@ -10,6 +10,8 @@ namespace readaloud
     {
         public Neuron TargetNeuron { get; }
         public double Weight { get; set; }
+
+        public double VelocityWeight { get; set; }
         public Connection(Neuron target, double weight)
         {
             TargetNeuron = target;

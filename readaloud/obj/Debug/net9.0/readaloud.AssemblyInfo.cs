@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("readaloud")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d58ae32274f9c07e76a65360be0ad28a7d2eebb3")]
 [assembly: System.Reflection.AssemblyProductAttribute("readaloud")]
 [assembly: System.Reflection.AssemblyTitleAttribute("readaloud")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

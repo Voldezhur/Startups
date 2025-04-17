@@ -1,30 +1,26 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\denis\\source\\repos\\readaloud\\",
+  "WorkspaceRootPath": "C:\\Users\\denis\\Desktop\\ds2\\Startups\\readaloud\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{D18B21F7-5C32-4247-AC9D-43E0A92D0500}|readaloud.csproj|c:\\users\\denis\\source\\repos\\readaloud\\neuron.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D18B21F7-5C32-4247-AC9D-43E0A92D0500}|readaloud.csproj|solutionrelative:neuron.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D18B21F7-5C32-4247-AC9D-43E0A92D0500}|readaloud.csproj|c:\\users\\denis\\source\\repos\\readaloud\\connection.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D18B21F7-5C32-4247-AC9D-43E0A92D0500}|readaloud.csproj|solutionrelative:connection.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D18B21F7-5C32-4247-AC9D-43E0A92D0500}|readaloud.csproj|c:\\users\\denis\\source\\repos\\readaloud\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{D18B21F7-5C32-4247-AC9D-43E0A92D0500}|readaloud.csproj|c:\\users\\denis\\desktop\\ds2\\startups\\readaloud\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{D18B21F7-5C32-4247-AC9D-43E0A92D0500}|readaloud.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D18B21F7-5C32-4247-AC9D-43E0A92D0500}|readaloud.csproj|c:\\users\\denis\\source\\repos\\readaloud\\network.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{D18B21F7-5C32-4247-AC9D-43E0A92D0500}|readaloud.csproj|c:\\users\\denis\\desktop\\ds2\\startups\\readaloud\\neuron.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D18B21F7-5C32-4247-AC9D-43E0A92D0500}|readaloud.csproj|solutionrelative:neuron.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D18B21F7-5C32-4247-AC9D-43E0A92D0500}|readaloud.csproj|c:\\users\\denis\\desktop\\ds2\\startups\\readaloud\\dataset.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D18B21F7-5C32-4247-AC9D-43E0A92D0500}|readaloud.csproj|solutionrelative:dataset.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D18B21F7-5C32-4247-AC9D-43E0A92D0500}|readaloud.csproj|c:\\users\\denis\\desktop\\ds2\\startups\\readaloud\\network.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{D18B21F7-5C32-4247-AC9D-43E0A92D0500}|readaloud.csproj|solutionrelative:network.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D18B21F7-5C32-4247-AC9D-43E0A92D0500}|readaloud.csproj|c:\\users\\denis\\source\\repos\\readaloud\\layer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D18B21F7-5C32-4247-AC9D-43E0A92D0500}|readaloud.csproj|solutionrelative:layer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D18B21F7-5C32-4247-AC9D-43E0A92D0500}|readaloud.csproj|c:\\users\\denis\\source\\repos\\readaloud\\dataset.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D18B21F7-5C32-4247-AC9D-43E0A92D0500}|readaloud.csproj|solutionrelative:dataset.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{D18B21F7-5C32-4247-AC9D-43E0A92D0500}|readaloud.csproj|c:\\users\\denis\\desktop\\ds2\\startups\\readaloud\\connection.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D18B21F7-5C32-4247-AC9D-43E0A92D0500}|readaloud.csproj|solutionrelative:connection.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -34,17 +30,17 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 0,
               "Title": "program.cs",
-              "DocumentMoniker": "C:\\Users\\denis\\source\\repos\\readaloud\\program.cs",
+              "DocumentMoniker": "C:\\Users\\denis\\Desktop\\ds2\\Startups\\readaloud\\program.cs",
               "RelativeDocumentMoniker": "program.cs",
-              "ToolTip": "C:\\Users\\denis\\source\\repos\\readaloud\\program.cs",
+              "ToolTip": "C:\\Users\\denis\\Desktop\\ds2\\Startups\\readaloud\\program.cs",
               "RelativeToolTip": "program.cs",
-              "ViewState": "AgIAAB4AAAAAAAAAAAAIwCoAAAA9AAAAAAAAAA==",
+              "ViewState": "AgIAAAQAAAAAAAAAAAAqwAsAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-08T15:21:12.569Z",
               "IsPinned": true,
@@ -56,52 +52,38 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 4,
               "Title": "Connection.cs",
-              "DocumentMoniker": "C:\\Users\\denis\\source\\repos\\readaloud\\Connection.cs",
+              "DocumentMoniker": "C:\\Users\\denis\\Desktop\\ds2\\Startups\\readaloud\\Connection.cs",
               "RelativeDocumentMoniker": "Connection.cs",
-              "ToolTip": "C:\\Users\\denis\\source\\repos\\readaloud\\Connection.cs",
+              "ToolTip": "C:\\Users\\denis\\Desktop\\ds2\\Startups\\readaloud\\Connection.cs",
               "RelativeToolTip": "Connection.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAiwA8AAAAcAAAAAAAAAA==",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAqwCAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-16T18:03:51.964Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-16T18:03:51.964Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "Neuron.cs",
-              "DocumentMoniker": "C:\\Users\\denis\\source\\repos\\readaloud\\Neuron.cs",
+              "DocumentMoniker": "C:\\Users\\denis\\Desktop\\ds2\\Startups\\readaloud\\Neuron.cs",
               "RelativeDocumentMoniker": "Neuron.cs",
-              "ToolTip": "C:\\Users\\denis\\source\\repos\\readaloud\\Neuron.cs",
+              "ToolTip": "C:\\Users\\denis\\Desktop\\ds2\\Startups\\readaloud\\Neuron.cs",
               "RelativeToolTip": "Neuron.cs",
-              "ViewState": "AgIAACwAAAAAAAAAAAAwwDkAAAAMAAAAAAAAAA==",
+              "ViewState": "AgIAAEcAAAAAAAAAAAAIwFsAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-16T16:15:39.321Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Layer.cs",
-              "DocumentMoniker": "C:\\Users\\denis\\source\\repos\\readaloud\\Layer.cs",
-              "RelativeDocumentMoniker": "Layer.cs",
-              "ToolTip": "C:\\Users\\denis\\source\\repos\\readaloud\\Layer.cs",
-              "RelativeToolTip": "Layer.cs",
-              "ViewState": "AgIAAEwAAAAAAAAAAAAIwGcAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-16T16:12:15.107Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 2,
               "Title": "Dataset.cs",
-              "DocumentMoniker": "C:\\Users\\denis\\source\\repos\\readaloud\\Dataset.cs",
+              "DocumentMoniker": "C:\\Users\\denis\\Desktop\\ds2\\Startups\\readaloud\\Dataset.cs",
               "RelativeDocumentMoniker": "Dataset.cs",
-              "ToolTip": "C:\\Users\\denis\\source\\repos\\readaloud\\Dataset.cs",
+              "ToolTip": "C:\\Users\\denis\\Desktop\\ds2\\Startups\\readaloud\\Dataset.cs",
               "RelativeToolTip": "Dataset.cs",
-              "ViewState": "AgIAADcAAAAAAAAAAAAIwEUAAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAABYAAAAAAAAAAADwvzgAAAAxAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-16T16:04:09.964Z",
               "EditorCaption": ""
@@ -110,11 +92,11 @@
               "$type": "Document",
               "DocumentIndex": 3,
               "Title": "Network.cs",
-              "DocumentMoniker": "C:\\Users\\denis\\source\\repos\\readaloud\\Network.cs",
+              "DocumentMoniker": "C:\\Users\\denis\\Desktop\\ds2\\Startups\\readaloud\\Network.cs",
               "RelativeDocumentMoniker": "Network.cs",
-              "ToolTip": "C:\\Users\\denis\\source\\repos\\readaloud\\Network.cs",
+              "ToolTip": "C:\\Users\\denis\\Desktop\\ds2\\Startups\\readaloud\\Network.cs",
               "RelativeToolTip": "Network.cs",
-              "ViewState": "AgIAAA0BAAAAAAAAAAAowLQBAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAO8AAAAAAAAAAAAkwAIBAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-16T16:04:04.051Z",
               "EditorCaption": ""

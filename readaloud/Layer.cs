@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net;
+using static readaloud.Neuron;
 
 namespace readaloud
 {
     public class Layer
     {
+        public InitializationMethod LayerInitializationMethod { get; set; }
+
         public bool IsMultithreaded { get; set; }
 
         public Iactv Activation { get; set; }
@@ -38,13 +42,13 @@ namespace readaloud
             {
                 foreach (var nextNeuron in nextLayer.Neurons)
                     currentNeuron.Connections.Add(new Connection(nextNeuron, 0));
-                currentNeuron.InitializeWeightsAndBiases();
+                currentNeuron.InitializeWeightsAndBiases(LayerInitializationMethod);
                 if (IsInput) // Установка bias в ноль для входного слоя
                     currentNeuron.Bias = 0;
             }
 
             // Initialize next layer's neurons (e.g., output layer)
-            nextLayer.Neurons.ForEach(n => n.InitializeWeightsAndBiases());
+            nextLayer.Neurons.ForEach(n => n.InitializeWeightsAndBiases(LayerInitializationMethod));
         }
 
         public void SetInputs(double[] inputs)

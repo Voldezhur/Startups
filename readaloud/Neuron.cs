@@ -11,12 +11,20 @@ namespace readaloud
         public double ActivatedValue { get; set; }
         public List<Connection> Connections { get; } = new List<Connection>();
         public double Bias { get; set; }
+        public double VelocityBias { get; set; }
         public double Delta { get; set; }
 
         private readonly object _lock = new object(); // Объект блокировки
 
         public double BiasGradient { get; set; }
         private readonly object _biasLock = new object();
+
+        public enum InitializationMethod
+        {
+            Xavier, // Для Sigmoid, Tanh
+            He,     // Для ReLU и его вариантов (LeakyReLU)
+            Uniform // Равномерное распределение (базовый метод)
+        }
 
         public void AddBiasGradient(double delta)
         {
@@ -52,11 +60,28 @@ namespace readaloud
 
         public void UpdatePrimaryValue() => PrimaryValue = _accumulatedInput + Bias;
 
-        public void InitializeWeightsAndBiases()
+        public void InitializeWeightsAndBiases(InitializationMethod method)
         {
             var inSize = Connections.Count;
-            var outSize = 1; // For output layer, or get from next layer's neuron count
-            var range = Math.Sqrt(6.0 / (inSize + outSize));
+            var outSize = 1; // Для выходного слоя (можно оптимизировать)
+            double range;
+
+            switch (method)
+            {
+                case InitializationMethod.Xavier:
+                    range = Math.Sqrt(6.0 / (inSize + outSize));
+                    break;
+                case InitializationMethod.He:
+                    range = Math.Sqrt(2.0 / inSize);
+                    break;
+                case InitializationMethod.Uniform:
+                    range = Math.Sqrt(6.0 / (inSize + outSize)); // По умолчанию как Xavier
+                    break;
+                default:
+                    range = Math.Sqrt(6.0 / (inSize + outSize));
+                    break;
+            }
+
             foreach (var connection in Connections)
             {
                 connection.Weight = _random.NextDouble() * (2 * range) - range;

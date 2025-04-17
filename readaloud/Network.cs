@@ -2,14 +2,18 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using static readaloud.Dataset;
+using static readaloud.Neuron;
 
 namespace readaloud
 {
     public class Network
     {
         public List<Layer> Layers { get; }
-        public Network(int[] layerSizes, Iactv[] activations, bool isMultithreaded = false)
+        public InitializationMethod InitializationMethod { get; private set; }
+        public Network(int[] layerSizes, Iactv[] activations, bool isMultithreaded = false, InitializationMethod initMethod = InitializationMethod.Xavier)
         {
+            InitializationMethod = initMethod;
+
             if (activations.Length != layerSizes.Length - 1)
                 throw new ArgumentException("Количество функций активации должно быть на 1 меньше, чем слоев.");
 
@@ -19,7 +23,8 @@ namespace readaloud
                 var layer = new Layer(layerSizes[i])
                 {
                     IsInput = i == 0,
-                    IsMultithreaded = isMultithreaded // Устанавливаем флаг многопоточности
+                    IsMultithreaded = isMultithreaded, // Устанавливаем флаг многопоточности
+                    LayerInitializationMethod = InitializationMethod
                 };
                 Layers.Add(layer);
 
@@ -41,7 +46,13 @@ namespace readaloud
                 layer.Forward();
         }
 
-        public void Backpropagate(double[] targets, double learningRate, bool accumulateGradients = true)
+        public void Backpropagate(
+            double[] targets, 
+            double learningRate, 
+            bool accumulateGradients = true, 
+            double momentum = 0, 
+            double regularization = 0
+            )
         {
             var outputLayer = Layers.Last();
             for (int i = 0; i < outputLayer.Neurons.Count; i++)
@@ -71,7 +82,7 @@ namespace readaloud
                             {
                                 if (accumulateGradients)
                                 {
-                                    connection.AddGradient(neuron.Delta * prevNeuron.ActivatedValue);
+                                    connection.AddGradient(neuron.Delta * prevNeuron.ActivatedValue + regularization * connection.Weight);
                                 }
                                 else
                                 {
@@ -114,7 +125,7 @@ namespace readaloud
                                 {
                                     if (accumulateGradients)
                                     {
-                                        connection.AddGradient(currentNeuron.Delta * prevNeuron.ActivatedValue);
+                                        connection.AddGradient(currentNeuron.Delta * prevNeuron.ActivatedValue + regularization * connection.Weight);
                                     }
                                     else
                                     {
@@ -143,16 +154,25 @@ namespace readaloud
             }
         }
 
-        public void ApplyGradients(double learningRate, int batchSize)
+        public void ApplyGradients(double learningRate, int batchSize, double momentum)
         {
             foreach (var layer in Layers)
             {
                 foreach (var neuron in layer.Neurons)
                 {
-                    neuron.Bias += learningRate * (neuron.BiasGradient / batchSize);
+                    // Обновление bias с Momentum
+                    double biasGrad = neuron.BiasGradient / batchSize;
+                    double velocityBias = momentum * neuron.VelocityBias + learningRate * biasGrad;
+                    neuron.Bias += velocityBias;
+                    neuron.VelocityBias = velocityBias;
+
+                    // Обновление весов с Momentum
                     foreach (var connection in neuron.Connections)
                     {
-                        connection.Weight += learningRate * (connection.Gradient / batchSize);
+                        double weightGrad = connection.Gradient / batchSize;
+                        double velocityWeight = momentum * connection.VelocityWeight + learningRate * weightGrad;
+                        connection.Weight += velocityWeight;
+                        connection.VelocityWeight = velocityWeight;
                     }
                 }
             }
@@ -179,40 +199,27 @@ namespace readaloud
             }
         }
 
-        private static IEnumerable<IEnumerable<Example>> GetBatches(IEnumerable<Example> examples, int batchSize)
-        {
-            if (batchSize == -1)
-            {
-                yield return examples.ToList();
-                yield break;
-            }
-
-            var batch = new List<Example>();
-            foreach (var example in examples)
-            {
-                batch.Add(example);
-                if (batch.Count == batchSize)
-                {
-                    yield return batch;
-                    batch = new List<Example>();
-                }
-            }
-            if (batch.Count > 0)
-                yield return batch;
-        }
-
         public void Train(
-        Dataset dataset,
-        int epochs,
-        double learningRate,
-        int batchSize = 32,
-        float reportIntervalPercent = 10.0f,
-        double maxError = double.MaxValue,
-        int maxTimeSeconds = -1)
+            Dataset dataset,
+            int epochs,
+            double learningRate,
+            int batchSize = 32,
+            float reportIntervalPercent = 10.0f,
+            double momentum = 0.0,
+            double maxError = double.MaxValue,
+            int maxTimeSeconds = -1,
+            double regularization = 0.0 
+        )
         {
             var startTime = DateTime.Now;
             int inputSize = Layers[0].Neurons.Count;
             int outputSize = Layers.Last().Neurons.Count;
+
+            double previousError = double.NaN;
+
+            var totalStopwatch = Stopwatch.StartNew();
+            int totalExamples = dataset.GetExamples().Count();
+
             // Проверка размеров входа/выхода
             foreach (var example in dataset.GetExamples())
             {
@@ -244,20 +251,27 @@ namespace readaloud
             for (int epoch = 0; epoch < epochs; epoch++)
             {
                 double totalError = 0.0;
+                var epochStopwatch = Stopwatch.StartNew();
+
                 // Разбиваем датасет на батчи
-                foreach (var batch in GetBatches(dataset.GetExamples(), batchSize))
+                foreach (var batch in dataset.ShuffleBatches(batchSize))
                 {
                     ResetGradients();
 
-                    // Параллельная обработка примеров в батче
                     Parallel.ForEach(batch, example =>
                     {
                         SetInputs(example.Inputs);
                         Forward();
-                        Backpropagate(example.Outputs, learningRate, accumulateGradients: true);
-                        // Вычисляем ошибку для текущего примера
+                        Backpropagate(
+                            example.Outputs,
+                            learningRate,
+                            accumulateGradients: true,
+                            momentum: momentum,
+                            regularization: regularization
+                        );
                         var outputs = GetOutputs();
-                        lock (this) // Блокировка для безопасного обновления totalError
+
+                        lock (this)
                         {
                             for (int i = 0; i < outputs.Length; i++)
                             {
@@ -266,8 +280,16 @@ namespace readaloud
                         }
                     });
 
-                    ApplyGradients(learningRate, batchSize);
+                    ApplyGradients(learningRate, batchSize, momentum);
                 }
+
+                epochStopwatch.Stop();
+
+                double epochDuration = epochStopwatch.Elapsed.TotalSeconds;
+                double examplesPerSecond = totalExamples / epochDuration;
+                int remainingEpochs = epochs - epoch - 1;
+                double remainingTime = remainingEpochs * epochDuration;
+                double TET = totalStopwatch.Elapsed.TotalSeconds;
 
                 averageError = totalError / dataset.GetExamples().Count();
                 // Проверка времени и ошибки
@@ -284,10 +306,19 @@ namespace readaloud
                 // Вывод по указанному интервалу
                 if (epoch % interval == 0 || epoch == epochs - 1)
                 {
-                    double elapsed = (DateTime.Now - startTime).TotalSeconds;
+                    double errorDelta = double.IsNaN(previousError)
+                        ? 0.0
+                        : (averageError - previousError);
+                    previousError = averageError; // Обновляем предыдущую ошибку
+
+                    // Вывод с новой информацией
                     double progress = (double)epoch / epochs * 100;
                     Console.WriteLine(
-                        $"Эпоха {epoch}/{epochs} ({progress:F2}%), Время: {elapsed:F1} сек, Ошибка: {averageError:F6}"
+                        $"Эпоха {epoch}/{epochs} ({progress:F2}%), " +
+                        $"Время: {TET:F1} сек, " +
+                        $"Ошибка: {averageError:F6} ({errorDelta:+0.000000;-0.000000}), " +
+                        $"Скорость: {examplesPerSecond:F1} пр/с, " +
+                        $"Осталось: {remainingTime:F1} сек"
                     );
                 }
             }

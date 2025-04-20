@@ -72,7 +72,7 @@ class _FilePageState extends State<FilePage> {
           ),
         );
       default:
-        return const Text('Неподдерживаемый тип файла');
+        return const Text('Неподдерживаемый тип файла 🤷‍♂️');
     }
   }
 }

@@ -11,7 +11,7 @@ class FilePage extends StatefulWidget {
 }
 
 class _FilePageState extends State<FilePage> {
-  final epubController = EpubController();
+  EpubController epubController = EpubController();
 
   @override
   Widget build(BuildContext context) {
@@ -20,22 +20,55 @@ class _FilePageState extends State<FilePage> {
       case 'epub':
         return Scaffold(
           appBar: AppBar(),
-          body: SafeArea(
-            child: Column(
-              children: [
-                Expanded(
-                  child: EpubViewer(
-                    epubSource: EpubSource.fromFile(widget.fileInfo['file']),
-                    epubController: epubController,
-                    displaySettings: EpubDisplaySettings(flow: EpubFlow.paginated, snap: true),
-                    onChaptersLoaded: (chapters) {},
-                    onEpubLoaded: () async {},
-                    onRelocated: (value) {},
-                    onTextSelected: (epubTextSelection) {},
-                  ),
+          body: Stack(
+            children: [
+              Expanded(
+                child: EpubViewer(
+                  epubSource: EpubSource.fromFile(widget.fileInfo['file']),
+                  epubController: epubController,
+                  displaySettings: EpubDisplaySettings(flow: EpubFlow.paginated, snap: true),
+                  onChaptersLoaded: (chapters) {},
+                  onEpubLoaded: () async {},
+                  onRelocated: (value) {},
+                  onTextSelected: (epubTextSelection) {},
                 ),
-              ],
-            ),
+              ),
+              // Going to the previous page
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Positioned(
+                      child: GestureDetector(
+                        onTap: epubController.prev,
+                        child: Container(
+                          height: MediaQuery.sizeOf(context).height,
+                          width: MediaQuery.sizeOf(context).width * 0.2,
+                          // Have to put some color on the Container, otherwise doesn't register a tap
+                          // No clue why, don't ask questions
+                          color: const Color.fromRGBO(255, 255, 255, 0.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                  // Going to the next page
+                  Expanded(
+                    child: Positioned(
+                      child: GestureDetector(
+                        onTap: epubController.next,
+                        child: Container(
+                          height: MediaQuery.sizeOf(context).height,
+                          width: MediaQuery.sizeOf(context).width * 0.2,
+                          // Have to put some color on the Container, otherwise doesn't register a tap
+                          // No clue why, don't ask questions
+                          color: const Color.fromRGBO(255, 255, 255, 0.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         );
       default:

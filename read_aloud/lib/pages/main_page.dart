@@ -29,7 +29,7 @@ class _MainPageState extends State<MainPage> {
 
     // SetState the files into a list
     for (FileSystemEntity file in files) {
-      if (file is File && extension(file.path) == '.fb2') {
+      if (file is File && extension(file.path) == '.epub') {
         setState(() {
           textFiles.add(TextFile(file.path));
         });

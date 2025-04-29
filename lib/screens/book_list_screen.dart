@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:books_reader/models/books.model.dart';
-import 'package:books_reader/widgets/book_card.dart';
-import 'package:books_reader/widgets/book_card_grid.dart';
-import 'package:books_reader/widgets/book_action_sheet.dart';
+import 'package:read_aloud_front/models/books.model.dart';
+import 'package:read_aloud_front/widgets/book_card.dart';
+import 'package:read_aloud_front/widgets/book_card_grid.dart';
+import 'package:read_aloud_front/widgets/book_action_sheet.dart';
+import 'package:read_aloud_front/utils/book_list_helpers.dart';
 
 class BookListScreen extends StatefulWidget {
   const BookListScreen({super.key, required this.title});
@@ -28,209 +29,6 @@ class _BookListScreenState extends State<BookListScreen> {
   void dispose() {
     _searchController.dispose();
     super.dispose();
-  }
-
-  void _showBookActions(BuildContext context, BooksStore bookStore, int index) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (BuildContext context) {
-        return BookActionSheet(
-          book: bookStore.list[index],
-          onShare: () {
-            // Implement share functionality
-            Navigator.pop(context);
-          },
-          onEdit: () {
-            Navigator.pop(context);
-            _editBook(bookStore, index);
-          },
-          onDelete: () {
-            Navigator.pop(context);
-            _deleteBook(bookStore, index);
-          },
-        );
-      },
-    );
-  }
-
-  void _editBook(BooksStore bookStore, int index) {
-    final book = bookStore.list[index];
-    final titleController = TextEditingController(text: book.title);
-    final authorController = TextEditingController(text: book.author);
-    final bookTxtController = TextEditingController(text: book.booktxt);
-    final imgController = TextEditingController(text: book.img);
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Редактировать книгу'),
-          content: SingleChildScrollView(
-            child: Column(
-              children: [
-                TextField(
-                  controller: titleController,
-                  decoration: const InputDecoration(labelText: 'Название'),
-                ),
-                TextField(
-                  controller: authorController,
-                  decoration: const InputDecoration(labelText: 'Автор'),
-                ),
-                TextField(
-                  controller: bookTxtController,
-                  decoration: const InputDecoration(labelText: 'Текст'),
-                ),
-                TextField(
-                  controller: imgController,
-                  decoration: const InputDecoration(
-                      labelText: 'Изображение (имя файла)'),
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              child: const Text('Отмена'),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            TextButton(
-              child: const Text('Сохранить'),
-              onPressed: () async {
-                if (titleController.text.isNotEmpty &&
-                    authorController.text.isNotEmpty &&
-                    imgController.text.isNotEmpty) {
-                  try {
-                    final updatedBook = BookItem(
-                      id: book.id,
-                      title: titleController.text,
-                      author: authorController.text,
-                      booktxt: bookTxtController.text,
-                      img: imgController.text,
-                      progress: book.progress,
-                      isFavorite: book.isFavorite,
-                    );
-                    await bookStore.updateBook(updatedBook);
-                    Navigator.of(context).pop();
-                  } catch (e) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Ошибка при сохранении')),
-                    );
-                  }
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content: Text('Ошибка: все поля должны быть заполнены.')),
-                  );
-                }
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _deleteBook(BooksStore bookStore, int index) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Подтверждение удаления'),
-          content: const Text('Вы уверены, что хотите удалить эту книгу?'),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Отмена'),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            TextButton(
-              child: const Text('Удалить'),
-              onPressed: () {
-                setState(() {
-                  bookStore.deleteBook(bookStore.list[index].id);
-                });
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _addBook(BooksStore bookStore) {
-    final id = bookStore.maxCode() + 1;
-    final titleController = TextEditingController();
-    final authorController = TextEditingController();
-    final bookTxtController = TextEditingController();
-    final imgController = TextEditingController();
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Добавить книгу'),
-          content: SingleChildScrollView(
-            child: Column(
-              children: [
-                TextField(
-                  controller: titleController,
-                  decoration: const InputDecoration(labelText: 'Название'),
-                ),
-                TextField(
-                  controller: authorController,
-                  decoration: const InputDecoration(labelText: 'Автор'),
-                ),
-                TextField(
-                  controller: bookTxtController,
-                  decoration: const InputDecoration(labelText: 'Текст'),
-                ),
-                TextField(
-                  controller: imgController,
-                  decoration: const InputDecoration(
-                      labelText: 'Изображение (имя файла)'),
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              child: const Text('Отмена'),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            TextButton(
-              child: const Text('Добавить'),
-              onPressed: () async {
-                if (titleController.text.isNotEmpty &&
-                    authorController.text.isNotEmpty &&
-                    imgController.text.isNotEmpty) {
-                  try {
-                    final newBook = BookItem(
-                      id: id,
-                      title: titleController.text,
-                      author: authorController.text,
-                      booktxt: bookTxtController.text,
-                      img: imgController.text,
-                    );
-                    await bookStore.addBook(newBook);
-                    Navigator.of(context).pop();
-                  } catch (e) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Ошибка')),
-                    );
-                  }
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content: Text('Ошибка: все поля должны быть заполнены.')),
-                  );
-                }
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 
   @override
@@ -319,7 +117,27 @@ class _BookListScreenState extends State<BookListScreen> {
                         itemCount: bookStore.length,
                         itemBuilder: (context, index) => BookCardGrid(
                           book: bookStore.list[index],
-                          onAction: () => _showBookActions(context, bookStore, index),
+                          onAction: () => showBookActions(
+                            context: context,
+                            bookStore: bookStore,
+                            index: index,
+                            onEdit: () => showEditBookDialog(
+                              context: context,
+                              bookStore: bookStore,
+                              index: index,
+                              onSave: (updatedBook) async {
+                                await bookStore.updateBook(updatedBook);
+                                setState(() {});
+                              },
+                            ),
+                            onDelete: () => showDeleteBookDialog(
+                              context: context,
+                              onDelete: () async {
+                                await bookStore.deleteBook(bookStore.list[index].id);
+                                setState(() {});
+                              },
+                            ),
+                          ),
                           onTap: () {
                             Navigator.of(context)
                                 .pushNamed('/info', arguments: index);
@@ -335,7 +153,27 @@ class _BookListScreenState extends State<BookListScreen> {
                         ),
                         itemBuilder: (context, index) => BookCard(
                           book: bookStore.list[index],
-                          onAction: () => _showBookActions(context, bookStore, index),
+                          onAction: () => showBookActions(
+                            context: context,
+                            bookStore: bookStore,
+                            index: index,
+                            onEdit: () => showEditBookDialog(
+                              context: context,
+                              bookStore: bookStore,
+                              index: index,
+                              onSave: (updatedBook) async {
+                                await bookStore.updateBook(updatedBook);
+                                setState(() {});
+                              },
+                            ),
+                            onDelete: () => showDeleteBookDialog(
+                              context: context,
+                              onDelete: () async {
+                                await bookStore.deleteBook(bookStore.list[index].id);
+                                setState(() {});
+                              },
+                            ),
+                          ),
                           onTap: () {
                             Navigator.of(context)
                                 .pushNamed('/info', arguments: index);
@@ -351,7 +189,14 @@ class _BookListScreenState extends State<BookListScreen> {
         width: 56,
         height: 56,
         child: FloatingActionButton(
-          onPressed: () => _addBook(bookStore),
+          onPressed: () => showAddBookDialog(
+            context: context,
+            newId: bookStore.maxCode() + 1,
+            onAdd: (newBook) async {
+              await bookStore.addBook(newBook);
+              setState(() {});
+            },
+          ),
           backgroundColor: Colors.white,
           elevation: 2,
           shape: CircleBorder(

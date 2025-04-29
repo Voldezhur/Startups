@@ -87,6 +87,20 @@ class BooksStore extends ChangeNotifier {
   }
 
   Future<void> deleteBook(int id) async {
+    final book = _books.firstWhere(
+      (item) => item.id == id,
+      orElse: () => BookItem(id: -1, title: '', author: '', filePath: null),
+    );
+    if (book.id != -1 && book.filePath != null && book.filePath!.isNotEmpty) {
+      final file = File(book.filePath!);
+      if (await file.exists()) {
+        try {
+          await file.delete();
+        } catch (e) {
+          // ignore error
+        }
+      }
+    }
     _books.removeWhere((item) => item.id == id);
     await _saveToFile();
     notifyListeners();
@@ -131,6 +145,7 @@ class BookItem {
   final String booktxt;
   final String img;
   final int progress;
+  final String? filePath;
   bool isFavorite;
 
   BookItem({
@@ -140,6 +155,7 @@ class BookItem {
     this.booktxt = '',
     this.img = '',
     this.progress = 0,
+    this.filePath,
     this.isFavorite = false,
   });
 
@@ -151,6 +167,7 @@ class BookItem {
       booktxt: json['booktxt'] as String? ?? '',
       img: json['img'] as String? ?? '',
       progress: json['progress'] as int? ?? 0,
+      filePath: json['filePath'] as String?,
       isFavorite: json['is_favorite'] as bool? ?? false,
     );
   }
@@ -163,6 +180,7 @@ class BookItem {
       'booktxt': booktxt,
       'img': img,
       'progress': progress,
+      'filePath': filePath,
       'is_favorite': isFavorite,
     };
   }

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:books_reader/theme.dart';
+import 'package:read_aloud_front/theme.dart';
 import 'package:provider/provider.dart';
-import 'package:books_reader/screens/book_list_screen.dart';
-import 'package:books_reader/models/books.model.dart';
-import 'package:books_reader/screens/book_text_screen.dart';
-import 'package:books_reader/screens/profile_screen.dart';
+import 'package:read_aloud_front/screens/book_list_screen.dart';
+import 'package:read_aloud_front/models/books.model.dart';
+import 'package:read_aloud_front/screens/book_text_screen.dart';
+import 'package:read_aloud_front/screens/profile_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 

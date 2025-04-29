@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:books_reader/models/books.model.dart';
+import 'package:read_aloud_front/models/books.model.dart';
 
 class BookActionSheet extends StatelessWidget {
   final BookItem book;

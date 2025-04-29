@@ -1,5 +1,5 @@
-name: books_reader
-description: "Books Reader."
+name: read_aloud_front
+description: "Read Aloud Front"
 publish_to: 'none'
 version: 0.1.0
 
@@ -7,13 +7,15 @@ environment:
   sdk: ^3.6.0
 
 dependencies:
-  audioplayers: ^6.4.0
+  audioplayers: ^6.0.0
   flutter:
     sdk: flutter
   provider: ^6.1.4
-  http: ^1.2.0
-  path_provider: ^2.1.2
-  shared_preferences: ^2.2.2
+  http: ^1.2.1
+  path_provider: ^2.1.3
+  shared_preferences: ^2.2.3
+  file_picker: ^8.1.2
+  epub_view: ^3.2.0
 
 dev_dependencies:
   flutter_test:

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:read_aloud_front/models/books.model.dart';
+import 'dart:io';
 
 class BookCard extends StatelessWidget {
   final BookItem book;
@@ -31,20 +32,27 @@ class BookCard extends StatelessWidget {
                 tag: 'bookImage${book.id}',
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(4),
-                  child: Image.asset(
-                    'assets/img/${book.img}',
-                    width: 72,
-                    height: 108,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        width: 72,
-                        height: 108,
-                        color: Colors.grey[300],
-                        child: Icon(Icons.book, color: Colors.grey[600]),
-                      );
-                    },
-                  ),
+                  child: (book.img.isNotEmpty)
+                      ? Image.file(
+                          File(book.img),
+                          width: 72,
+                          height: 108,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              width: 72,
+                              height: 108,
+                              color: Colors.grey[300],
+                              child: Icon(Icons.book, color: Colors.grey[600]),
+                            );
+                          },
+                        )
+                      : Container(
+                          width: 72,
+                          height: 108,
+                          color: Colors.grey[300],
+                          child: Icon(Icons.book, color: Colors.grey[600]),
+                        ),
                 ),
               ),
               SizedBox(width: 16),
@@ -111,4 +119,4 @@ class BookCard extends StatelessWidget {
       ),
     );
   }
-} 
+}

@@ -1,7 +1,9 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:read_aloud_front/models/books.model.dart';
 import 'package:read_aloud_front/widgets/book_action_sheet.dart';
-import 'package:read_aloud_front/widgets/add_book_dialog.dart';
 
 Future<void> showBookActions({
   required BuildContext context,
@@ -41,7 +43,6 @@ Future<void> showEditBookDialog({
   final book = bookStore.list[index];
   final titleController = TextEditingController(text: book.title);
   final authorController = TextEditingController(text: book.author);
-  final bookTxtController = TextEditingController(text: book.booktxt);
   final imgController = TextEditingController(text: book.img);
 
   await showDialog(
@@ -52,6 +53,33 @@ Future<void> showEditBookDialog({
         content: SingleChildScrollView(
           child: Column(
             children: [
+              GestureDetector(
+                onTap: () async {
+                  // Открытие файлового диалога для выбора PNG
+                  /* final result = await FilePicker.platform.pickFiles(
+                    type: FileType.custom,
+                    allowedExtensions: ['png'],
+                  );
+                  if (result != null && result.files.single.path != null) {
+                    final selectedPath = result.files.single.path!;
+                    await File(selectedPath).copy(imgController.text);
+                  } */
+                },
+                child: imgController.text.isNotEmpty
+                    ? Image.file(
+                        File(imgController.text),
+                        width: 120,
+                        height: 180,
+                        fit: BoxFit.cover,
+                      )
+                    : Container(
+                        width: 120,
+                        height: 180,
+                        color: Colors.grey[300],
+                        child: const Icon(Icons.image, size: 48),
+                      ),
+              ),
+              const SizedBox(height: 16),
               TextField(
                 controller: titleController,
                 decoration: const InputDecoration(labelText: 'Название'),
@@ -59,15 +87,7 @@ Future<void> showEditBookDialog({
               TextField(
                 controller: authorController,
                 decoration: const InputDecoration(labelText: 'Автор'),
-              ),
-              TextField(
-                controller: bookTxtController,
-                decoration: const InputDecoration(labelText: 'Текст'),
-              ),
-              TextField(
-                controller: imgController,
-                decoration: const InputDecoration(labelText: 'Изображение (имя файла)'),
-              ),
+              )
             ],
           ),
         ),
@@ -80,22 +100,18 @@ Future<void> showEditBookDialog({
             child: const Text('Сохранить'),
             onPressed: () async {
               if (titleController.text.isNotEmpty &&
-                  authorController.text.isNotEmpty &&
-                  imgController.text.isNotEmpty) {
+                  authorController.text.isNotEmpty) {
                 final updatedBook = BookItem(
-                  id: book.id,
-                  title: titleController.text,
-                  author: authorController.text,
-                  booktxt: bookTxtController.text,
-                  img: imgController.text,
-                  progress: book.progress,
-                  isFavorite: book.isFavorite,
-                );
+                    id: book.id,
+                    title: titleController.text,
+                    author: authorController.text,
+                    img: imgController.text);
                 onSave(updatedBook);
                 Navigator.of(context).pop();
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Ошибка: все поля должны быть заполнены.')),
+                  const SnackBar(
+                      content: Text('Ошибка: все поля должны быть заполнены.')),
                 );
               }
             },
@@ -133,16 +149,3 @@ Future<void> showDeleteBookDialog({
     },
   );
 }
-
-Future<void> showAddBookDialog({
-  required BuildContext context,
-  required void Function(BookItem) onAdd,
-  required int newId,
-}) async {
-  await showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AddBookDialog(onAdd: onAdd, newId: newId);
-    },
-  );
-} 

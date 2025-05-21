@@ -177,12 +177,14 @@ class _BookTextScreenState extends State<BookTextScreen> {
   }
 
   void _togglePlay(BooksStore bookStore, BookItem book) async {
+    if (_isPlaying) {
+      await bookStore.stopAudio();
+    } else {
+      await bookStore.playAudio(book.title);
+    }
     setState(() {
       _isPlaying = !_isPlaying;
     });
-    if (_isPlaying) {
-      await bookStore.playAudio(book.booktxt);
-    }
   }
 
   @override
@@ -202,8 +204,8 @@ class _BookTextScreenState extends State<BookTextScreen> {
         title: _buildTitle(book.title),
         actions: [
           IconButton(
-            icon: Icon(_isSearching ? Icons.close : Icons.search, 
-                      color: _textColor),
+            icon: Icon(_isSearching ? Icons.close : Icons.search,
+                color: _textColor),
             onPressed: _toggleSearch,
           ),
           IconButton(
@@ -216,7 +218,9 @@ class _BookTextScreenState extends State<BookTextScreen> {
           ),
         ],
       ),
-      body: (book.filePath != null && book.filePath!.isNotEmpty && _epubController != null)
+      body: (book.filePath != null &&
+              book.filePath!.isNotEmpty &&
+              _epubController != null)
           ? EpubView(
               controller: _epubController!,
             )
@@ -260,7 +264,39 @@ class _BookTextScreenState extends State<BookTextScreen> {
                   color: Colors.black12,
                 ),
                 TextButton.icon(
-                  onPressed: () {},
+                  onPressed: () {
+                    if (_epubController != null) {
+                      showModalBottomSheet(
+                        context: context,
+                        backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.vertical(top: Radius.circular(16)),
+                        ),
+                        isScrollControlled: true,
+                        builder: (context) => SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.7,
+                          child: EpubViewTableOfContents(
+                              controller: _epubController!,
+                              itemBuilder: (context, index, chapter,
+                                      itemCount) =>
+                                  ListTile(
+                                    title: Text(
+                                        chapter.title ?? 'Нет заголовка',
+                                        style: TextStyle(
+                                            color: Colors.black87,
+                                            fontSize: 14)),
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                      final cfi =
+                                          _epubController?.generateEpubCfi();
+                                      _epubController?.gotoEpubCfi(cfi ?? '');
+                                    },
+                                  )),
+                        ),
+                      );
+                    }
+                  },
                   icon: Icon(
                     Icons.list,
                     color: Colors.black54,
@@ -277,4 +313,4 @@ class _BookTextScreenState extends State<BookTextScreen> {
       ),
     );
   }
-} 
+}

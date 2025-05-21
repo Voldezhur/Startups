@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:read_aloud_front/models/books.model.dart';
 
@@ -28,22 +29,29 @@ class BookCardGrid extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8),
                   child: AspectRatio(
-                    aspectRatio: 2/3,
-                    child: Image.asset(
-                      'assets/img/${book.img}',
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          color: Colors.grey[300],
-                          child: Icon(Icons.book, color: Colors.grey[600], size: 48),
-                        );
-                      },
-                    ),
+                    aspectRatio: 2 / 3,
+                    child: (book.img.isNotEmpty)
+                        ? Image.file(
+                            File(book.img),
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                color: Colors.grey[300],
+                                child: Icon(Icons.book,
+                                    color: Colors.grey[600], size: 48),
+                              );
+                            },
+                          )
+                        : Container(
+                            color: Colors.grey[300],
+                            child: Icon(Icons.book,
+                                color: Colors.grey[600], size: 48),
+                          ),
                   ),
                 ),
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Row(
               children: [
                 Expanded(
@@ -101,4 +109,4 @@ class BookCardGrid extends StatelessWidget {
       ),
     );
   }
-} 
+}

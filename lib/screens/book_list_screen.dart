@@ -1,9 +1,9 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:read_aloud_front/models/books.model.dart';
 import 'package:read_aloud_front/widgets/book_card.dart';
 import 'package:read_aloud_front/widgets/book_card_grid.dart';
-import 'package:read_aloud_front/widgets/book_action_sheet.dart';
 import 'package:read_aloud_front/utils/book_list_helpers.dart';
 
 class BookListScreen extends StatefulWidget {
@@ -55,7 +55,8 @@ class _BookListScreenState extends State<BookListScreen> {
                         decoration: InputDecoration(
                           hintText: 'Поиск',
                           border: InputBorder.none,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+                          contentPadding:
+                              EdgeInsets.symmetric(horizontal: 16, vertical: 5),
                           prefixIcon: Icon(Icons.search, color: Colors.black54),
                         ),
                       ),
@@ -84,7 +85,8 @@ class _BookListScreenState extends State<BookListScreen> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: IconButton(
-                      icon: Icon(_isGridView ? Icons.view_list : Icons.grid_view),
+                      icon:
+                          Icon(_isGridView ? Icons.view_list : Icons.grid_view),
                       onPressed: () {
                         setState(() {
                           _isGridView = !_isGridView;
@@ -133,7 +135,8 @@ class _BookListScreenState extends State<BookListScreen> {
                             onDelete: () => showDeleteBookDialog(
                               context: context,
                               onDelete: () async {
-                                await bookStore.deleteBook(bookStore.list[index].id);
+                                await bookStore
+                                    .deleteBook(bookStore.list[index].id);
                                 setState(() {});
                               },
                             ),
@@ -169,7 +172,8 @@ class _BookListScreenState extends State<BookListScreen> {
                             onDelete: () => showDeleteBookDialog(
                               context: context,
                               onDelete: () async {
-                                await bookStore.deleteBook(bookStore.list[index].id);
+                                await bookStore
+                                    .deleteBook(bookStore.list[index].id);
                                 setState(() {});
                               },
                             ),
@@ -189,14 +193,15 @@ class _BookListScreenState extends State<BookListScreen> {
         width: 56,
         height: 56,
         child: FloatingActionButton(
-          onPressed: () => showAddBookDialog(
-            context: context,
-            newId: bookStore.maxCode() + 1,
-            onAdd: (newBook) async {
-              await bookStore.addBook(newBook);
-              setState(() {});
-            },
-          ),
+          onPressed: () async {
+            final result = await FilePicker.platform
+                .pickFiles(type: FileType.custom, allowedExtensions: ['epub']);
+            if (result != null && result.files.single.path != null) {
+              final filePath = result.files.single.path!;
+              final newBook = await bookStore.addBookFromEpub(filePath);
+              if (newBook != null) setState(() {});
+            }
+          },
           backgroundColor: Colors.white,
           elevation: 2,
           shape: CircleBorder(
@@ -210,4 +215,4 @@ class _BookListScreenState extends State<BookListScreen> {
       ),
     );
   }
-} 
+}

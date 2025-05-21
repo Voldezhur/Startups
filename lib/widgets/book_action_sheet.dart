@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:read_aloud_front/models/books.model.dart';
+import 'dart:io';
 
 class BookActionSheet extends StatelessWidget {
   final BookItem book;
@@ -31,20 +32,27 @@ class BookActionSheet extends StatelessWidget {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
-                  child: Image.asset(
-                    'assets/img/${book.img}',
-                    width: 100,
-                    height: 150,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        width: 100,
-                        height: 150,
-                        color: Colors.grey[300],
-                        child: Icon(Icons.book, color: Colors.grey[600], size: 48),
-                      );
-                    },
-                  ),
+                  child: (book.img.isNotEmpty)
+                      ? Image.file(
+                          File(book.img),
+                          width: 100,
+                          height: 150,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              width: 100,
+                              height: 150,
+                              color: Colors.grey[300],
+                              child: Icon(Icons.book, color: Colors.grey[600], size: 48),
+                            );
+                          },
+                        )
+                      : Container(
+                          width: 100,
+                          height: 150,
+                          color: Colors.grey[300],
+                          child: Icon(Icons.book, color: Colors.grey[600], size: 48),
+                        ),
                 ),
                 SizedBox(height: 16),
                 Text(
@@ -137,4 +145,4 @@ class _ActionButton extends StatelessWidget {
       ),
     );
   }
-} 
+}

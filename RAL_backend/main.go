@@ -84,8 +84,9 @@ func version_alpha(w http.ResponseWriter, r *http.Request) {
 	}
 	content := data.Text
 	// Выполняем C#-приложение
-	cmd := exec.Command("mono", "/ozvuchka/readaloud_v2.exe", "0", string(content)) //linux
+	//cmd := exec.Command("mono", "/ozvuchka/readaloud", "0", string(content)) //linux - c#
 	//cmd := exec.Command("ozvuchka/readaloud_v2.exe", "0", string(content)) //windows
+	cmd := exec.Command("python3", "/ozvuchka/readaloud_ver2.py", "0", string(content)) //linux - python
 
 	var out bytes.Buffer
 	cmd.Stdout = &out

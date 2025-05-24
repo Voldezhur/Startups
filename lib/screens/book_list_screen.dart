@@ -95,6 +95,32 @@ class _BookListScreenState extends State<BookListScreen> {
                       color: Colors.black54,
                     ),
                   ),
+                  SizedBox(width: 16),
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: IconButton(
+                      icon: Icon(
+                          bookStore.profile.uid > 0
+                              ? Icons.person_2
+                              : Icons.person_2_outlined,
+                          color: bookStore.profile.uid > 0
+                              ? Colors.green
+                              : Colors.red),
+                      onPressed: () {
+                        if (bookStore.profile.uid > 0) {
+                          Navigator.of(context).pushNamed('/profile');
+                        } else {
+                          Navigator.of(context).pushNamed('/auth');
+                        }
+                      },
+                      color: Colors.black54,
+                    ),
+                  ),
                 ],
               ),
             ),

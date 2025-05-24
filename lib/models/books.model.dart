@@ -12,8 +12,8 @@ import 'package:image/image.dart' as image;
 
 class BooksStore extends ChangeNotifier {
   final List<BookItem> _books = [];
+  final UserProfile _profile = UserProfile();
   final baseUrl = "http://localhost:8080/";
-  UserProfile _userProfile = UserProfile();
   late SharedPreferences _prefs;
   bool _isInitialized = false;
 
@@ -21,7 +21,7 @@ class BooksStore extends ChangeNotifier {
   bool _isPlaying = false;
 
   List<BookItem> get list => _books;
-  UserProfile get userProfile => _userProfile;
+  UserProfile get profile => _profile;
 
   Future<void> _initializeLocalPath() async {
     if (!_isInitialized) {
@@ -129,8 +129,8 @@ class BooksStore extends ChangeNotifier {
     }
   }
 
-  Future<void> updateProfile(UserProfile profile) async {
-    _userProfile = profile;
+  Future<void> updateProfile(UserProfile upd_profile) async {
+    // _profile = upd_profile;
     notifyListeners();
   }
 
@@ -245,6 +245,53 @@ class BooksStore extends ChangeNotifier {
       throw Exception('Ошибка при добавлении книги из epub: ${e.toString()}');
     }
   }
+
+  /// Authenticates user with external API and updates profile information
+  /// Returns true if authentication was successful
+  Future<bool> authenticate(String email, String password) async {
+    try {
+      // **** заглушка на авторизацию ***
+      _profile.uid = 1;
+      _profile.name = 'Александр';
+      _profile.surname = 'Иванов';
+      _profile.email = 'user@mail.ru';
+      _profile.subscribeCode = 'voice1:22-03-2026;voice2:22-03-2026';
+      return true;
+      // *****************
+
+      // ignore: dead_code
+      final response = await http.post(
+        Uri.parse('${baseUrl}auth'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          'email': email,
+          'password': password,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(response.body);
+
+        _profile.uid = data['uid'] ?? 0;
+        _profile.name = data['name'] ?? '';
+        _profile.surname = data['surname'] ?? '';
+        _profile.email = data['email'] ?? '';
+        _profile.subscribeCode = data['subscribe_code'] ?? '';
+
+        // Don't store password in memory
+        _profile.password = '';
+
+        notifyListeners();
+        return true;
+      }
+
+      return false;
+    } catch (e) {
+      throw Exception('Authentication failed: ${e.toString()}');
+    }
+  }
 }
 
 class BookItem {
@@ -296,11 +343,15 @@ class UserProfile {
   String name;
   String surname;
   String email;
+  String password;
+  String subscribeCode;
 
   UserProfile({
     this.uid = 0,
     this.name = '',
     this.surname = '',
     this.email = '',
+    this.password = '',
+    this.subscribeCode = '',
   });
 }

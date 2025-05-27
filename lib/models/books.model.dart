@@ -9,6 +9,7 @@ import 'package:epub_view/epub_view.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 import 'package:image/image.dart' as image;
+import 'package:flutter_tts/flutter_tts.dart';
 
 class BooksStore extends ChangeNotifier {
   final List<BookItem> _books = [];
@@ -19,7 +20,8 @@ class BooksStore extends ChangeNotifier {
 
   final AudioPlayer _player = AudioPlayer();
   bool _isPlaying = false;
-
+  bool get isPlaying => _isPlaying;
+  final FlutterTts _flutterTts = FlutterTts();
   List<BookItem> get list => _books;
   UserProfile get profile => _profile;
 
@@ -135,36 +137,27 @@ class BooksStore extends ChangeNotifier {
   }
 
   Future<void> playAudio(String txt) async {
-    try {
-      final response = await http.post(
-        Uri.parse('${baseUrl}getaudio'),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(<String, String>{'text': txt}),
-      );
-
-      if (response.statusCode >= 200 && response.statusCode < 300) {
-        List jsonResponse = json.decode(response.body);
-        if (jsonResponse.isNotEmpty) {
-          await _player.play(UrlSource(baseUrl + jsonResponse[0]));
-        } else {
-          await _player.play(AssetSource('demo.mp3'));
-        }
-      } else {
-        await _player.play(AssetSource('demo.mp3'));
-      }
-      _isPlaying = true;
-    } catch (e) {
-      await _player.play(AssetSource('demo.mp3'));
-      _isPlaying = true;
+    if (await _flutterTts.isLanguageInstalled('ru-RU')) {
+      _flutterTts.setLanguage('ru-RU');
+    } else {
+      _flutterTts.setLanguage('en-US');
     }
+
+    await _flutterTts.stop();
+    _isPlaying = true;
+    _flutterTts.setCompletionHandler(() {
+      _isPlaying = false;
+      notifyListeners();
+    });
+    await _flutterTts.speak(txt);
+    notifyListeners();
   }
 
   Future<void> stopAudio() async {
     if (_isPlaying) {
-      await _player.stop();
+      await _flutterTts.stop();
       _isPlaying = false;
+      notifyListeners();
     }
   }
 
@@ -246,6 +239,30 @@ class BooksStore extends ChangeNotifier {
     }
   }
 
+  Future<List<String>> getBookText(String epubFilePath) async {
+    final File epubFile = File(epubFilePath);
+    final document = await EpubDocument.openFile(epubFile);
+    final chapters = document.Chapters;
+    List<String> paragraphs = [];
+    final paragraphRegExp = RegExp(
+        r'<(p|div|h1|h2)[^>]*>(.*?)<\/(p|div|h1|h2)>',
+        caseSensitive: false,
+        multiLine: true);
+    final tagRegExp = RegExp(r'<[^>]+>');
+    for (final chapter in chapters!) {
+      final html = chapter.HtmlContent ?? '';
+      final matches = paragraphRegExp.allMatches(html);
+      for (final match in matches) {
+        String paragraph =
+            match.group(2)?.replaceAll(tagRegExp, '').trim() ?? '';
+        if (paragraph.isNotEmpty) {
+          paragraphs.add(paragraph);
+        }
+      }
+    }
+    return paragraphs;
+  }
+
   /// Authenticates user with external API and updates profile information
   /// Returns true if authentication was successful
   Future<bool> authenticate(String email, String password) async {
@@ -290,6 +307,54 @@ class BooksStore extends ChangeNotifier {
       return false;
     } catch (e) {
       throw Exception('Authentication failed: ${e.toString()}');
+    }
+  }
+
+  List<String> _ttsLanguages = [];
+  List<dynamic> _ttsVoices = [];
+  String? _selectedTtsLanguage;
+  dynamic _selectedTtsVoice;
+
+  List<String> get ttsLanguages => _ttsLanguages;
+  List<dynamic> get ttsVoices => _ttsVoices;
+  String? get selectedTtsLanguage => _selectedTtsLanguage;
+  dynamic get selectedTtsVoice => _selectedTtsVoice;
+
+  Future<void> fetchTtsLanguagesAndVoices() async {
+    _ttsLanguages = List<String>.from(await _flutterTts.getLanguages);
+    _ttsVoices = await _flutterTts.getVoices;
+    if (_ttsLanguages.isNotEmpty) {
+      _selectedTtsLanguage ??= _ttsLanguages.first;
+      final flutterTts = FlutterTts();
+      await flutterTts.setLanguage(_selectedTtsLanguage!);
+    }
+    if (_ttsVoices.isNotEmpty) {
+      _selectedTtsVoice ??= _ttsVoices.first;
+      await _flutterTts.setVoice({
+        'name': _selectedTtsVoice['name'],
+        'locale': _selectedTtsVoice['locale']
+      });
+    }
+    final ttsChangeNotifier = ChangeNotifier();
+    ttsChangeNotifier.notifyListeners();
+  }
+
+  void setTtsLanguage(String lang) async {
+    _selectedTtsLanguage = lang;
+    await _flutterTts.setLanguage(lang);
+    final ttsChangeNotifier = ChangeNotifier();
+    ttsChangeNotifier.notifyListeners();
+  }
+
+  void setTtsVoice(dynamic voice) async {
+    try {
+      _selectedTtsVoice = voice;
+      await _flutterTts.setVoice(voice);
+    } catch (e) {
+      throw Exception('Ошибка выбора спикера: ${e.toString()}');
+    } finally {
+      final ttsChangeNotifier = ChangeNotifier();
+      ttsChangeNotifier.notifyListeners();
     }
   }
 }

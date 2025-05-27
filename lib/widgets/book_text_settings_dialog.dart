@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:read_aloud_front/models/books.model.dart';
 
 /// Диалог настроек текста для экрана чтения книги
 class BookTextSettingsDialog extends StatelessWidget {
@@ -35,6 +37,7 @@ class BookTextSettingsDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final booksStore = Provider.of<BooksStore>(context);
     return Dialog(
       alignment: Alignment.topCenter,
       insetPadding: const EdgeInsets.only(top: 60, left: 16, right: 16),
@@ -80,7 +83,9 @@ class BookTextSettingsDialog extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('Размер', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                      const Text('Размер',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w500)),
                       const SizedBox(height: 8),
                       Row(
                         children: [
@@ -103,7 +108,9 @@ class BookTextSettingsDialog extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('Межстрочный интервал', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                      const Text('Межстрочный интервал',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w500)),
                       const SizedBox(height: 8),
                       Row(
                         children: [
@@ -124,7 +131,8 @@ class BookTextSettingsDialog extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 16),
-            const Text('Режим просмотра', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+            const Text('Режим просмотра',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
             const SizedBox(height: 8),
             Row(
               children: [
@@ -139,7 +147,8 @@ class BookTextSettingsDialog extends StatelessWidget {
                   color: const Color(0xFFF5F1E4),
                   borderColor: Colors.black12,
                   isSelected: backgroundColor == const Color(0xFFF5F1E4),
-                  onTap: () => onThemeSelected(const Color(0xFFF5F1E4), Colors.black87),
+                  onTap: () =>
+                      onThemeSelected(const Color(0xFFF5F1E4), Colors.black87),
                 ),
                 const SizedBox(width: 8),
                 _ThemeButton(
@@ -228,4 +237,4 @@ class _ThemeButton extends StatelessWidget {
       ),
     );
   }
-} 
+}

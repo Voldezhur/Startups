@@ -4,6 +4,7 @@ import 'package:read_aloud_front/models/books.model.dart';
 import 'package:read_aloud_front/widgets/book_text_settings_dialog.dart';
 import 'package:epub_view/epub_view.dart';
 import 'dart:io';
+import 'package:read_aloud_front/widgets/voice_settings_dialog.dart';
 
 class BookTextScreen extends StatefulWidget {
   const BookTextScreen({super.key});
@@ -15,7 +16,6 @@ class BookTextScreen extends StatefulWidget {
 class _BookTextScreenState extends State<BookTextScreen> {
   int index = 0;
   bool _isSearching = false;
-  bool _isPlaying = false;
   final TextEditingController _searchController = TextEditingController();
   int _fontSizePercent = 100;
   int _lineHeightPercent = 100;
@@ -28,6 +28,8 @@ class _BookTextScreenState extends State<BookTextScreen> {
 
   double get _fontSize => 16.0 * _fontSizePercent / 100;
   double get _lineHeight => _lineHeightPercent / 100;
+
+  bool shouldStop = true;
 
   @override
   void initState() {
@@ -136,55 +138,38 @@ class _BookTextScreenState extends State<BookTextScreen> {
     );
   }
 
-  void _showVoiceSettings() {
+  Future<void> _showVoiceSettings() async {
+    final booksStore = Provider.of<BooksStore>(context, listen: false);
+    await booksStore.fetchTtsLanguagesAndVoices();
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.white,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
-      builder: (context) => Padding(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Настройки озвучки',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 16),
-            ListTile(
-              title: Text('Скорость речи'),
-              trailing: DropdownButton<String>(
-                value: 'Нормальная',
-                items: ['Медленная', 'Нормальная', 'Быстрая']
-                    .map((String value) => DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        ))
-                    .toList(),
-                onChanged: (_) {},
-              ),
-            ),
-          ],
-        ),
-      ),
+      builder: (context) => const VoiceSettingsDialog(),
     );
   }
 
   void _togglePlay(BooksStore bookStore, BookItem book) async {
-    if (_isPlaying) {
+    if (bookStore.isPlaying && shouldStop == false) {
+      shouldStop = true;
       await bookStore.stopAudio();
-    } else {
-      await bookStore.playAudio(book.title);
+      return;
     }
-    setState(() {
-      _isPlaying = !_isPlaying;
-    });
+
+    shouldStop = false;
+    final paragraphs = await bookStore.getBookText(book.filePath ?? '');
+    for (final paragraph in paragraphs) {
+      if (!mounted || shouldStop) break;
+      await bookStore.playAudio(paragraph);
+      while (bookStore.isPlaying) {
+        await Future.delayed(Duration(milliseconds: 200));
+        if (!mounted && shouldStop) {
+          break;
+        }
+      }
+    }
   }
 
   @override
@@ -250,7 +235,7 @@ class _BookTextScreenState extends State<BookTextScreen> {
                 TextButton.icon(
                   onPressed: () => _togglePlay(booksStore, book),
                   icon: Icon(
-                    _isPlaying ? Icons.pause : Icons.play_arrow,
+                    shouldStop == false ? Icons.pause : Icons.play_arrow,
                     color: Colors.green,
                   ),
                   label: Text(

@@ -2,8 +2,8 @@ package main
 
 import (
 	"bytes"
-	//"fmt"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -83,10 +83,11 @@ func version_alpha(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	content := data.Text
+	fmt.Println("DEBUG - Текст для синтеза:", content) // Простой вывод
 	// Выполняем C#-приложение
 	//cmd := exec.Command("mono", "/ozvuchka/readaloud", "0", string(content)) //linux - c#
 	//cmd := exec.Command("ozvuchka/readaloud_v2.exe", "0", string(content)) //windows
-	cmd := exec.Command("python3", "/ozvuchka/readaloud_ver2.py", "0", string(content)) //linux - python
+	cmd := exec.Command("python3", "ozvuchka/readaloud_ver2.py", "0", string(content)) //linux - python
 
 	var out bytes.Buffer
 	cmd.Stdout = &out
@@ -104,7 +105,7 @@ func version_alpha(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Отправляем сгенерированный файл
-	fileToSend, err := os.Open("debug_output.wav")
+	fileToSend, err := os.Open("output.mp3")
 	if err != nil {
 		http.Error(w, "Файл не найден", http.StatusNotFound)
 		return
@@ -123,9 +124,9 @@ func writeWavFile(filename string, data []byte) error {
 }
 
 func main() {
+	fmt.Println("Сервер запущен")
 	http.HandleFunc("/uppercase", uppercaseHandler)
 	http.HandleFunc("/mp3_test", mp3test)
 	http.HandleFunc("/test", version_alpha)
-
 	http.ListenAndServe(":8080", nil)
 }
